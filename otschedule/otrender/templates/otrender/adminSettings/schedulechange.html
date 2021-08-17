@@ -1,0 +1,35 @@
+{% extends "otrender/home.html" %}
+{% block content %}
+<div style= "float:  left;"id = "dateschangeblock">
+<h1>Date Change  *(MM/DD/YYYY)</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ dateform }}
+    <button type="submit" name="dateAddButton">Add Date</button>
+    {% for date in dateslist %}
+        <div style = "overflow: hidden;" >
+        <h1 style = "float: left">{{ date.date |date:'N d/Y'}}</h1>
+        <a style = "float:left" href="/otrender/deleteDate/{{date.id}}">Delete</a>
+        </div>
+        {% endfor %}
+
+  </form>
+</div>
+<div style="float: right;" id = "dateschangeblock">
+    <h1>Time Change *(24:00 hour format)</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ timeform }}
+        <button type="submit" name="timeAddButton">Add Time</button>
+        {% for time in timeslist %}
+            <div style = "overflow: hidden;" >
+            <h1 style = "float: left">{{ time.time |date:'G:i'}}</h1>
+            <a style = "float:left" href="/otrender/deleteTime/{{time.id}}">Delete</a>
+            </div>
+            {% endfor %}
+    
+      </form>
+    </div>
+    
+
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends "otrender/home.html" %}
+{% block content %}
+<h1>userchange</h1>
+<hr>
+{% for user in userslist %}
+<div style = "overflow: hidden">
+<p style = "float: left">{{ user.username }}</p>
+<a style = "float: right; padding: 10px;" href = "">edit</a>
+<a style = "float: right; padding: 10px;" href = "">delete</a>
+</div>
+<hr>
+{% endfor %}
+{% endblock %}
