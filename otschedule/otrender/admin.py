@@ -4,6 +4,6 @@ from django.contrib.auth.admin import UserAdmin
 from .models import user, sessiondates, sessionTimes
 
 # Register your models here.
-admin.site.register(user, UserAdmin)
+admin.site.register(user)
 
 

@@ -11,14 +11,14 @@ from . import models
 def renderTimes(request):
 	if request.user.is_authenticated:
 
-
-
 		return render(request, 'otrender/render.html')
 	else:
 		return redirect('login')
 
 def scheduleSettings(request):
-	if  request.user.is_superuser:
+	print(request.use.is_admin)
+	if  request.user.is_admin:
+		
 		if request.method == "POST":
 			if "dateAddButton" in request.POST:
 				form = forms.datesForm(data=request.POST)
@@ -51,7 +51,7 @@ def deleteTime(request, id):
 	return redirect("changeSchedule")
 	
 def userSettings(request):
-	if  request.user.is_superuser:
+	if  request.user.is_admin:
 		users = [i for i in models.user.objects.all()]
 		return render(request, "otrender/adminSettings/userchange.html", {"userslist":users})
 

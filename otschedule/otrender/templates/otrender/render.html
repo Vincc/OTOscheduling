@@ -2,7 +2,7 @@
 {% block title %} rendering {% endblock %}
 {% block content %} 
 <div id = "timetable">
-    {% if user.is_superuser %}
+    {% if user.is_admin %}
     <h1>Admin Panel</h1>
     <ul>
         <li><a style= "margin-left: 10px; float: left;" href = "{% url 'changeSchedule' %}">Schedule settings</a></li>
@@ -10,6 +10,7 @@
     </ul>
         {% else %}
     {% for i in '0123'|make_list %}
+        
         <div style = "overflow: hidden;" id = "item">
         <div style = "float: left; padding: 3%; font-size: x-large;">{{ forloop.counter }}</div>
         <p style=" float: left;  margin-left: 10%;padding: 1%; font-size: x-large;">00/00/00</p>
