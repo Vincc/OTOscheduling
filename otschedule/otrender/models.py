@@ -1,6 +1,7 @@
 from django.db import models
 from django import forms
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager, Permission
+from django.db.models.deletion import CASCADE
 from django.db.models.fields import CharField
 
 
@@ -23,16 +24,21 @@ class UserManager(BaseUserManager): #customizing built in user manager
         )
 
         user.is_admin = True
+        user.is_teacher = True
         user.save(using=self._db)
         return user
 
 class user(AbstractBaseUser, PermissionsMixin): #custom user model based on base user framework
-    
+
     email = None
+    is_teacher = models.BooleanField(default=False) #determines user is a teacher
+
     is_admin = models.BooleanField(default=False) #determines user is admin
 
     tutorGroup = CharField(max_length=4, default="0000") #specify tutour group of user
     username = models.CharField(max_length=30, unique=True, default="appUser")
+    meetingtimes = models.ManyToManyField("sessionTimes", related_name="students")
+
     #username and password field is built in, and dosen't need to be redefined
     objects = UserManager() #define the usermanager for customuser
     list_display = ("username", "is_admin")
@@ -44,22 +50,25 @@ class user(AbstractBaseUser, PermissionsMixin): #custom user model based on base
 
     @property
     def is_staff(self):
-        return self.is_admin
+        return self.is_teacher
+
     @property
     def is_superuser(self):
         return self.is_admin
-        
+
     def __str__(self):
         return self.username
 
 
 
 class sessiondates(models.Model):
-    date = models.DateField() #create table of session dates
+
+    date = models.DateField(unique=True) #create table of session dates
     class Meta: #define metadata
         ordering = ['date'] #order table by value of date
 
 class sessionTimes(models.Model): 
-    time = models.TimeField() #create field of sessiontimes
+    sessiontimedate = models.ForeignKey(sessiondates,on_delete=CASCADE)
+    time = models.TimeField(unique=True) #create field of sessiontimes
     class Meta: #define metadata
         ordering = ['time'] #order table by value of time

@@ -67,7 +67,7 @@ WSGI_APPLICATION = 'otschedule.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'otdatabase',
+        'NAME': 'otdata',
         'USER': 'otadmin',
         'PASSWORD': '2122004',
         'HOST': 'localhost',

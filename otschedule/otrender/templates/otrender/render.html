@@ -8,12 +8,12 @@
         <li><a style= "margin-left: 10px; float: left;" href = "{% url 'changeSchedule' %}">Schedule settings</a></li>
         <li><a style= "margin-left: 10px; float: left;" href = "{% url 'changeUser' %}">User settings</a></li>     
     </ul>
-        {% else %}
-    {% for i in '0123'|make_list %}
+    {% else %}
+    {% for session in user.meetingTimes %}
         
         <div style = "overflow: hidden;" id = "item">
         <div style = "float: left; padding: 3%; font-size: x-large;">{{ forloop.counter }}</div>
-        <p style=" float: left;  margin-left: 10%;padding: 1%; font-size: x-large;">00/00/00</p>
+        <p style=" float: left;  margin-left: 10%;padding: 1%; font-size: x-large;">{{ session }}</p>
         
     </div>
     <hr>   

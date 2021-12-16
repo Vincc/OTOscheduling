@@ -14,13 +14,13 @@
             <a style= "color: white;  margin-right: 10px; float: right;" href = "{% url 'changePassword' %}">Change password</a>   
             {% endif %}
 
-            {% if user.is_superuser %}
+            {% if user.is_admin %}
             <a style= "color: white;  margin-right: 10px; float: right;" href = "{% url 'changeSchedule' %}">Schedule settings</a>
             <a style= "color: white;  margin-right: 10px; float: right;" href = "{% url 'changeUser' %}">User settings</a>        
             {% endif %}
 
             <a href = "{% url 'renderTimes' %}">
-                <h1 style = "color: white; margin-left: 10%; float: left;">1-2-1 Schedule</h1>
+                <h1 style = "color: white; margin-left: 10%; float: left;">1-2-1 Scheduler</h1>
             </a>
  
              
