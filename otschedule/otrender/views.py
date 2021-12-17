@@ -33,10 +33,12 @@ def scheduleSettings(request):
 					return redirect("changeSchedule")
 			if "timeAddButton" in request.POST:
 				form = forms.timesForm(data=request.POST)
+				
 				if form.is_valid():
 					inputTime = form.cleaned_data.get("New_Time")
-					newTimeEntry = models.sessionTimes(time=inputTime)
-					newTimeEntry.save()
+					for date in models.sessiondates.objects.all():
+						newTimeEntry = models.sessionTimes(time=inputTime, sessiontimedate = date)
+						newTimeEntry.save()
 					return redirect("changeSchedule")
 
 			#algorithm for generating timetables
