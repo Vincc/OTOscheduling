@@ -67,7 +67,7 @@ WSGI_APPLICATION = 'otschedule.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'otdatabase',
+        'NAME': 'otdata',
         'USER': 'otadmin',
         'PASSWORD': '2122004',
         'HOST': 'localhost',
@@ -104,7 +104,8 @@ TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
-USE_L10N = True
+USE_L10N = False                 
+TIME_FORMAT = 'H:i'
 
 USE_TZ = True
 

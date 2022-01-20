@@ -26,7 +26,7 @@
       </form>
       {% for time in timeslist %}
       <div style = "overflow: hidden;" >
-      <p style = "float: left">{{ time.time |date:'G:i'}}</p>
+      <p style = "float: left">{{ time |date:'G:i'}}</p>
       <a style = "float:left" href="/otrender/deleteTime/{{time.id}}">Delete</a>
       </div>
       {% endfor %}
@@ -49,7 +49,8 @@
         
     </form>
     {% for session in rendersessions %}
-        <p>{{ session.time }}</p>
+
+        <p>{{ session.sessiontimedate.date }} - {{ session.time }}</p>
     <hr>   
     {% endfor %}
     

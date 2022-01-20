@@ -62,7 +62,7 @@ class user(AbstractBaseUser, PermissionsMixin): #custom user model based on base
 
 
 class sessiondates(models.Model):
-    date = models.DateField(unique=True) #create table of session dates
+    date = models.DateField(unique = True) #create table of session dates
     class Meta: #define metadata
         ordering = ['date'] #order table by value of date
 
@@ -71,3 +71,5 @@ class sessionTimes(models.Model):
     time = models.TimeField() #create field of sessiontimes
     class Meta: #define metadata
         ordering = ['time'] #order table by value of time
+
+

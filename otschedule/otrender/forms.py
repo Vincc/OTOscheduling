@@ -19,7 +19,6 @@ class generationForm(forms.Form):
 
 class renderForm(forms.Form):
     
-    studentChoices = [(c,student.username) for c,student in enumerate(models.user.objects.filter(is_teacher= False))]
+    studentChoices = [(student.username,student.username) for student in models.user.objects.filter(is_teacher= False)]
     studentSelected= forms.CharField(label="Select student to render: ", widget=forms.Select(choices=studentChoices))
-    
-    studentSelected=""
+

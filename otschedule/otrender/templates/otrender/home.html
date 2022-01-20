@@ -16,7 +16,7 @@
 
             {% if user.is_admin %}
             <a style= "color: white;  margin-right: 10px; float: right;" href = "{% url 'changeSchedule' %}">Schedule settings</a>
-            <a style= "color: white;  margin-right: 10px; float: right;" href = "{% url 'changeUser' %}">User settings</a>        
+        
             {% endif %}
 
             <a href = "{% url 'renderTimes' %}">

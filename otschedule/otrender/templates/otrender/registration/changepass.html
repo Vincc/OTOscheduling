@@ -1,8 +1,11 @@
 {% extends "otrender/home.html" %}
 {% block content %}
+<div style = "margin: auto; width: 50%; ">
+<h1>Change Password</h1>
 <form method="post">
     {% csrf_token %}
     {{ form }}
     <button type="submit">Save changes</button>
   </form>
+</div>
 {% endblock %}

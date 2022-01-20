@@ -6,14 +6,33 @@
     <h1>Admin Panel</h1>
     <ul>
         <li><a style= "margin-left: 10px; float: left;" href = "{% url 'changeSchedule' %}">Schedule settings</a></li>
-        <li><a style= "margin-left: 10px; float: left;" href = "{% url 'changeUser' %}">User settings</a></li>     
+           
     </ul>
+    {% elif user.is_teacher %}
+    <h1>{{user.tutorGroup}} Tutor Panel</h1>
+    <p>Render timetables</p>
+    <form method="post">
+        {% csrf_token %}
+        {{ renderform }}
+        <button type="submit" name="renderform">Render</button>
+        
+    </form>
+    {% for session in meetingTimes %}
+
+    <div style = "overflow: hidden;" id = "item">
+        <div style = "float: left; padding: 3%; font-size: x-large;">{{ forloop.counter }}</div>
+        <p style=" float: left;  margin-left: 10%;padding: 1%; font-size: x-large;">{{ session.sessiontimedate.date }}</p>
+        <p style=" float: right;  margin-left: 10%;padding: 1%; font-size: x-large;">{{ session.time }}</p>
+        </div>
+    <hr>  
+    {% endfor %}
     {% else %}
-    {% for session in user.meetingTimes %}
+    {% for session in meetingTimes %}
         
         <div style = "overflow: hidden;" id = "item">
         <div style = "float: left; padding: 3%; font-size: x-large;">{{ forloop.counter }}</div>
-        <p style=" float: left;  margin-left: 10%;padding: 1%; font-size: x-large;">{{ session }}</p>
+        <p style=" float: left;  margin-left: 10%;padding: 1%; font-size: x-large;">{{ session.sessiontimedate.date }}</p>
+        <p style=" float: right;  margin-left: 10%;padding: 1%; font-size: x-large;">{{ session.time }}</p>
         
     </div>
     <hr>   

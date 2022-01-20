@@ -7,11 +7,25 @@ from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash 
 from . import forms
 from . import models
-
 def renderTimes(request):
 	if request.user.is_authenticated:
-		return render(request, "otrender/render.html")
-
+		if not request.user.is_teacher:
+			renderSessions = request.user.meetingtimes.all()
+			return render(request, "otrender/render.html", {"meetingTimes":renderSessions})
+		else:
+			rendersessions = []
+			renderform = forms.renderForm()
+			if request.method == "POST":
+				
+				if "renderform" in request.POST:
+					form = forms.renderForm(data=request.POST)
+					if form.is_valid():
+						
+						currentStudent = models.user.objects.filter(username = form.cleaned_data.get("studentSelected")).first()
+						
+						rendersessions = models.sessionTimes.objects.filter(students = currentStudent).prefetch_related("students").all()
+					
+			return render(request, "otrender/render.html", {"meetingTimes": rendersessions, "renderform": renderform})
 	else:
 		return redirect("login")
 
@@ -19,26 +33,37 @@ def scheduleSettings(request):
 	generationError = ""
 	if  request.user.is_admin:
 		rendersessions = []
-		times = [i for i in models.sessionTimes.objects.all()]
-		dates = [i for i in models.sessiondates.objects.all()]
-		students = [i for i in models.user.objects.filter(is_teacher = False)]
-		teachers = [i for i in models.user.objects.filter(is_teacher= True, is_admin=False)]
+		times = models.sessionTimes.objects.all().order_by('sessiontimedate', "time")
+		dates = models.sessiondates.objects.all()
+		students = models.user.objects.filter(is_teacher = False)
+		
 		if request.method == "POST":
 			if "dateAddButton" in request.POST:
 				form = forms.datesForm(data=request.POST)
 				if form.is_valid():
 					inputDate = form.cleaned_data.get("New_Date")
-					newDateEntry = models.sessiondates(date=inputDate)
-					newDateEntry.save()
+					if inputDate not in models.sessiondates.objects.values_list("date", flat=True).distinct():
+						newDateEntry = models.sessiondates(date=inputDate)
+						newDateEntry.save()
+						print("saved")
+						for i in models.sessionTimes.objects.values_list("time", flat=True).distinct():
+							newTimeEntry = models.sessionTimes(time = i, sessiontimedate = models.sessiondates.objects.get(date = inputDate))
+							newTimeEntry.save()
+					
 					return redirect("changeSchedule")
 			if "timeAddButton" in request.POST:
 				form = forms.timesForm(data=request.POST)
 				
 				if form.is_valid():
 					inputTime = form.cleaned_data.get("New_Time")
-					for date in models.sessiondates.objects.all():
+					for date in dates:	
+						print(date)
+						print(inputTime)
+						
 						newTimeEntry = models.sessionTimes(time=inputTime, sessiontimedate = date)
+						print(newTimeEntry.id)
 						newTimeEntry.save()
+						print(models.sessionTimes.objects.first().time)
 					return redirect("changeSchedule")
 
 			#algorithm for generating timetables
@@ -53,41 +78,49 @@ def scheduleSettings(request):
 					if int((len(times)*len(dates))/(maxStudents*numSessions)) < 1:
 						generationError += "There aren't enough timeslots for all the students."	
 
+			
+					#clear generated table
+					for student in models.user.objects.all():
+
+						student.meetingtimes.clear()
+
+
 					#verify that there are enough timeslots for all students
 					
 					if generationError == "":
-						c = 0
-						for teacher in teachers:
-							currenttutor = list(filter(lambda student: (student.tutorGroup == teacher.tutorGroup), students))
-							for date in dates:
-								for time in times:
-									if c<numSessions:
-										try:
-											currenttutor[c].meetingtimes.add(time)
-										except IndexError:
-											pass
+							
+						for tutor in models.user.objects.filter(is_teacher = False).values_list("tutorGroup", flat=True).distinct():
+							studentc = 0
+							currenttutor = list(filter(lambda student: (student.tutorGroup == tutor), students))
+							for time in times: 
+								if len(models.sessionTimes.objects.filter(students = currenttutor[studentc%len(currenttutor)]).prefetch_related("students").all())<numSessions:
+									try: 
+										currenttutor[studentc%len(currenttutor)].meetingtimes.add(time)
+									except IndexError:
+										pass
 										
-										c+=1
-										continue
-									c=0
-
+									studentc+=1
+									continue
+								break	
+				
 						generationError += "Successfully Generated."
 			
 			if "renderform" in request.POST:
 				form = forms.renderForm(data=request.POST)
 				if form.is_valid():
+					
 					currentStudent = models.user.objects.filter(username = form.cleaned_data.get("studentSelected")).first()
 
-					rendersessions = models.sessionTimes.objects.filter(students = currentStudent).prefetch_related('students').all()
+					rendersessions = models.sessionTimes.objects.filter(students = currentStudent).prefetch_related("students").all()
 					
 
 		generateForm = forms.generationForm()
 		dateform = forms.datesForm()
 		timeform = forms.timesForm()
 		renderform = forms.renderForm()
-
-		
-		return render(request, "otrender/adminSettings/schedulechange.html", {"rendersessions": rendersessions, "renderform": renderform, "dateform":dateform,"timeform":timeform, "dateslist":dates, "timeslist":times, "studentlist":students, "generateForm": generateForm, "generationErrorMessage":generationError,})
+		rendertimelist = [time for time in models.sessionTimes.objects.values_list("time", flat=True).distinct()]
+		print(rendertimelist)
+		return render(request, "otrender/adminSettings/schedulechange.html", {"rendersessions": rendersessions, "renderform": renderform, "dateform":dateform,"timeform":timeform, "dateslist":dates, "timeslist":rendertimelist, "studentlist":students, "generateForm": generateForm, "generationErrorMessage":generationError,})
 		
 	else:
 		return redirect("renderTimes")
@@ -101,16 +134,10 @@ def deleteDate(request, id):
 	models.sessiondates.objects.filter(id=id).delete()
 	return redirect("changeSchedule")
 def deleteTime(request, id):
-	models.sessionTimes.objects.filter(id=id).delete()
+	models.sessionTimes.objects.filter(time=models.sessionTimes.objects.get(id=id).time).delete()
 	return redirect("changeSchedule")
 	
-def userSettings(request):
-	if  request.user.is_admin:
-		users = [i for i in models.user.objects.all()]
-		return render(request, "otrender/adminSettings/userchange.html", {"userslist":users})
 
-	else:
-		return redirect("renderTimes")
 
 def login_request(request): 
 	if request.method == "POST": 
