@@ -1,5 +1,5 @@
 {% extends "otrender/home.html" %}
-{% block title %} rendering {% endblock %}
+{% block title %} Rendering {% endblock %}
 {% block content %} 
 <div id = "timetable">
     {% if user.is_admin %}
@@ -15,8 +15,9 @@
         {% csrf_token %}
         {{ renderform }}
         <button type="submit" name="renderform">Render</button>
-        
     </form>
+
+    <p><b> Current student: {{currentStudent }}</b></p>
     {% for session in meetingTimes %}
 
     <div style = "overflow: hidden;" id = "item">

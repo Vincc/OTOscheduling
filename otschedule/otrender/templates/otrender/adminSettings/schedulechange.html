@@ -1,4 +1,5 @@
 {% extends "otrender/home.html" %}
+{% block title %}Edit Schedules{% endblock %}
 {% block content %}
 <div style = "width: 100%;height:50%; overflow: scroll;">
 <div style= "float:  left;"id = "dateschangeblock">
@@ -12,6 +13,7 @@
   </form>
   {% for date in dateslist %}
   <div style = "overflow: hidden;" >
+    
   <p style = "float: left">{{ date.date |date:'N d/Y'}}</p>
   <a style = "float:left" href="/otrender/deleteDate/{{date.id}}">Delete</a>
   </div>
@@ -25,9 +27,11 @@
         <button type="submit" name="timeAddButton">Add Time</button>
       </form>
       {% for time in timeslist %}
+      
       <div style = "overflow: hidden;" >
+        
       <p style = "float: left">{{ time |date:'G:i'}}</p>
-      <a style = "float:left" href="/otrender/deleteTime/{{time.id}}">Delete</a>
+      <a style = "float:left" href="/otrender/deleteTime/{{time}}">Delete</a>
       </div>
       {% endfor %}
   
@@ -48,6 +52,7 @@
         <button type="submit" name="renderform">Render</button>
         
     </form>
+    <p><b> Current student: {{currentStudent }}</b></p>
     {% for session in rendersessions %}
 
         <p>{{ session.sessiontimedate.date }} - {{ session.time }}</p>

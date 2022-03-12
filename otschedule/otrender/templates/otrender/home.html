@@ -1,9 +1,8 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html>
     <head>
-        <title>{% block title %}home1{% endblock %}</title>
+        <title>{% block title %}Home{% endblock %}</title>
         <link rel="stylesheet" type="text/css" href="{% static 'otrender/style.css' %}">
     </head>
     <body>
@@ -22,16 +21,11 @@
             <a href = "{% url 'renderTimes' %}">
                 <h1 style = "color: white; margin-left: 10%; float: left;">1-2-1 Scheduler</h1>
             </a>
- 
-             
-            
-        </div>
-        
-        <div id="content">
-            
-            {% block content %}{% endblock %}
+        </div>        
+        <div id="content">            
+            {% block content %}
+            {% endblock %}
         </div>
         <div id = "footer"><img style = "height: 70%; margin-top: 5px;" src="{% static 'otrender/images/logo_white.png' %}"></div>
-    
     </body>
 </html>
